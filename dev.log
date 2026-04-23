@@ -1,0 +1,17 @@
+
+> maharashtra-election-assistant@1.0.0 dev
+> next dev
+
+   ▲ Next.js 15.5.15
+   - Local:        http://localhost:3000
+   - Network:      http://192.168.56.1:3000
+
+ ✓ Starting...
+ ✓ Ready in 2.2s
+ ○ Compiling /result ...
+ ✓ Compiled /result in 9.5s (1347 modules)
+ GET /result?age=22&citizenship=yes&registered=no&moved=no 200 in 10225ms
+ GET / 200 in 10261ms
+ GET / 200 in 216ms
+ GET / 200 in 83ms
+ GET /result?age=36&citizenship=yes&registered=yes&moved=no 200 in 53ms
