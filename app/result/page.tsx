@@ -5,6 +5,7 @@ import { useSearchParams } from "next/navigation";
 import { Suspense, useEffect, useMemo, useState } from "react";
 import LanguageSwitcher from "@/components/LanguageSwitcher";
 import ResultCard from "@/components/ResultCard";
+import FeedbackForm from "@/components/FeedbackForm";
 import electionData from "@/data/maharashtraElection.json";
 import { getDecision } from "@/lib/decisionEngine";
 import { Language, RegistrationAnswer, UserAnswers, YesNo } from "@/lib/types";
@@ -46,6 +47,30 @@ function ResultPageContent() {
   }, [searchParams]);
 
   const result = useMemo(() => getDecision(answers), [answers]);
+
+  // Log results to Firestore
+  useEffect(() => {
+    const logResult = async () => {
+      try {
+        const { db } = await import("@/lib/firebase");
+        const { collection, addDoc, serverTimestamp } = await import("firebase/firestore");
+        
+        await addDoc(collection(db, "results"), {
+          ...answers,
+          status: result.status,
+          timestamp: serverTimestamp(),
+          userAgent: navigator.userAgent,
+          language: language
+        });
+      } catch (error) {
+        console.error("Error logging result to Firestore:", error);
+      }
+    };
+
+    if (answers.age > 0) {
+      logResult();
+    }
+  }, [answers, result.status, language]);
 
   return (
     <main className="mx-auto min-h-screen w-full max-w-3xl px-4 py-4 sm:px-6">
@@ -107,6 +132,10 @@ function ResultPageContent() {
             </article>
           ))}
         </div>
+      </section>
+
+      <section className="mt-4">
+        <FeedbackForm language={language} />
       </section>
 
       <footer className="mb-4 mt-4 rounded-xl border border-[var(--outline-variant)] bg-[var(--surface-container-low)] p-4 text-sm text-[var(--on-surface)]">

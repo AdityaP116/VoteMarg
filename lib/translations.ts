@@ -448,6 +448,26 @@ export const translations = {
     en: "Unknown",
     hi: "अस्पष्ट",
     mr: "अज्ञात"
+  },
+  feedback_title: {
+    en: "Was this helpful?",
+    hi: "क्या यह मददगार था?",
+    mr: "हे उपयुक्त होते का?"
+  },
+  feedback_placeholder: {
+    en: "Any suggestions for us?",
+    hi: "हमारे लिए कोई सुझाव?",
+    mr: "आमच्यासाठी काही सूचना आहेत का?"
+  },
+  feedback_submit: {
+    en: "Send Feedback",
+    hi: "सुझाव भेजें",
+    mr: "सूचना पाठवा"
+  },
+  feedback_success: {
+    en: "Thank you for your feedback!",
+    hi: "आपके सुझाव के लिए धन्यवाद!",
+    mr: "तुमच्या सूचनेबद्दल धन्यवाद!"
   }
 } as const;
 
