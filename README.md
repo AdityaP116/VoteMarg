@@ -10,6 +10,8 @@ A modern, interactive web application designed to assist citizens of Maharashtra
 - **Quick Eligibility Check**: Simple flow to determine if you are eligible to vote.
 - **Interactive Progress**: Real-time progress tracking through the eligibility steps.
 - **Actionable Results**: Provides clear, next-step instructions based on your eligibility status.
+- **Data Insights**: Anonymously logs eligibility results to Firestore to help analyze common voter issues.
+- **User Feedback**: Integrated feedback system to collect and store user suggestions.
 - **Premium UI/UX**: Built with a modern aesthetic, featuring smooth animations and a responsive design.
 
 ## 🛠️ Tech Stack
@@ -18,6 +20,7 @@ A modern, interactive web application designed to assist citizens of Maharashtra
 - **Language**: [TypeScript](https://www.typescriptlang.org/)
 - **Styling**: [Tailwind CSS](https://tailwindcss.com/)
 - **Animations**: [Framer Motion](https://www.framer.com/motion/)
+- **Database**: [Firebase Firestore](https://firebase.google.com/docs/firestore)
 - **Deployment**: [Google Cloud Run](https://cloud.google.com/run)
 
 ## 💻 Local Development
@@ -40,6 +43,17 @@ Follow these steps to run the project locally:
    npm run dev
    ```
    Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+
+### Environment Variables
+
+Create a `.env.local` file in the project root with the following keys:
+
+```env
+NEXT_PUBLIC_FIREBASE_API_KEY=your_api_key
+NEXT_PUBLIC_FIREBASE_PROJECT_ID=your_project_id
+NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN=your_project_id.firebaseapp.com
+NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET=your_project_id.appspot.com
+```
 
 ## ☁️ Deployment
 
