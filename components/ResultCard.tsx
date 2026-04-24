@@ -8,11 +8,11 @@ interface ResultCardProps {
 }
 
 const statusClassMap: Record<DecisionResult["status"], string> = {
-  not_eligible: "border-[var(--error)] bg-[var(--error-container)]",
-  not_registered: "border-[var(--tertiary)] bg-[#ffe9dc]",
-  update_required: "border-[var(--tertiary)] bg-[#ffe9dc]",
-  registered: "border-[var(--secondary)] bg-[#e9ffef]",
-  unknown: "border-[var(--primary)] bg-[var(--surface-container)]"
+  not_eligible: "border-[var(--error)] bg-[var(--error-container)] text-[var(--on-error-container)]",
+  not_registered: "border-[#b93815] bg-[#ffe9dc] text-[#7d3600]",
+  update_required: "border-[#b93815] bg-[#ffe9dc] text-[#7d3600]",
+  registered: "border-[var(--secondary)] bg-[#e9ffef] text-[#006d30]",
+  unknown: "border-[var(--primary)] bg-[var(--surface-container)] text-[var(--on-surface)]"
 };
 
 const statusLabelKeyMap: Record<DecisionResult["status"], TranslationKey> = {
@@ -31,10 +31,10 @@ export default function ResultCard({ result, language }: ResultCardProps) {
   return (
     <article className="space-y-5 rounded-xl border border-[var(--outline-variant)] bg-[var(--surface-container-lowest)] p-4">
       <div className={`rounded-lg border-l-4 p-4 ${statusClassMap[result.status]}`}>
-        <p className="text-xs font-semibold uppercase tracking-wide text-[var(--on-surface-variant)]">
+        <p className="text-xs font-bold uppercase tracking-wide opacity-80">
           {t("status_label", language)}: {t(statusLabelKeyMap[result.status], language)}
         </p>
-        <h2 className="mt-2 text-xl font-bold leading-7 text-[var(--on-surface)]">
+        <h2 className="mt-1 text-xl font-bold leading-7">
           {translateKey(result.title)}
         </h2>
       </div>
@@ -61,9 +61,10 @@ export default function ResultCard({ result, language }: ResultCardProps) {
           {translatedDocuments.map((document) => (
             <li
               key={document}
-              className="rounded-md border border-[var(--outline-variant)] bg-[var(--surface-container-low)] px-3 py-2"
+              className="flex items-start gap-3 rounded-md border border-[var(--outline-variant)] bg-[var(--surface-container-lowest)] px-3 py-2"
             >
-              {document}
+              <span aria-hidden="true" className="text-base text-[var(--primary)] leading-tight">📄</span>
+              <span className="leading-tight">{document}</span>
             </li>
           ))}
         </ul>
@@ -73,14 +74,18 @@ export default function ResultCard({ result, language }: ResultCardProps) {
         <h3 className="text-base font-semibold text-[var(--on-surface)]">
           {t("links_label", language)}
         </h3>
-        <div className="grid gap-2">
-          {result.links.map((link) => (
+        <div className="flex flex-col gap-3">
+          {result.links.map((link, index) => (
             <a
               key={`${link.url}-${link.label}`}
               href={link.url}
               target={link.url.startsWith("http") ? "_blank" : undefined}
               rel={link.url.startsWith("http") ? "noreferrer" : undefined}
-              className="min-h-12 rounded-md border border-[var(--primary)] px-3 py-3 text-sm font-semibold text-[var(--primary)] transition-colors hover:bg-[var(--surface-container)]"
+              className={`flex min-h-[48px] items-center justify-center rounded-md px-4 py-3 text-sm font-semibold transition-transform active:scale-95 ${
+                index === 0
+                  ? "bg-[var(--primary)] text-[var(--on-primary)] shadow-md hover:bg-[var(--primary-container)]"
+                  : "border-2 border-[var(--primary)] bg-transparent text-[var(--primary)] hover:bg-[var(--surface-container-low)]"
+              }`}
             >
               {translateKey(link.label)}
             </a>

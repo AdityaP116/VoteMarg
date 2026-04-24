@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react";
 import LanguageSwitcher from "@/components/LanguageSwitcher";
 import QuestionFlow from "@/components/QuestionFlow";
-import electionData from "@/data/maharashtraElection.json";
+import TrustSection from "@/components/TrustSection";
 import { Language } from "@/lib/types";
 import {
   DEFAULT_LANGUAGE,
@@ -22,21 +22,26 @@ export default function HomePage() {
 
   return (
     <main className="mx-auto min-h-screen w-full max-w-3xl px-4 py-4 sm:px-6">
-      <header className="rounded-xl bg-[var(--surface-container-lowest)] p-4">
+      <header className="rounded-xl border border-[var(--outline-variant)] bg-[var(--surface-container-lowest)] p-5 shadow-sm">
         <div className="flex items-start justify-between gap-4">
-          <div className="space-y-2">
-            <h1 className="text-2xl font-bold leading-8 text-[var(--primary)]">
-              {t("app_title", language)}
+          <div className="space-y-3">
+            <h1 className="text-3xl font-extrabold tracking-tight text-[var(--primary)]">
+              VoteMarg
             </h1>
-            <p className="text-sm leading-6 text-[var(--on-surface-variant)]">
-              {t("app_subtitle", language)}
+            <p className="max-w-sm text-sm leading-relaxed text-[var(--on-surface-variant)]">
+              Welcome! Let’s quickly check your voting eligibility and guide your next steps.
             </p>
-            <a
-              href="#eligibility-form"
-              className="mt-1 inline-flex min-h-12 items-center rounded-md bg-[var(--primary-container)] px-4 text-sm font-semibold text-[var(--on-primary)] transition-colors hover:bg-[var(--primary)]"
-            >
-              {t("start_check", language)}
-            </a>
+            <div className="pt-2">
+              <a
+                href="#eligibility-form"
+                className="inline-flex min-h-[48px] items-center justify-center rounded-md bg-[var(--primary-container)] px-6 text-sm font-semibold text-[var(--on-primary)] shadow-sm transition-transform hover:bg-[var(--primary)] active:scale-95"
+              >
+                {t("start_check", language)}
+              </a>
+              <p className="mt-2 text-[11px] text-[var(--outline)]">
+                Based on official election guidelines
+              </p>
+            </div>
           </div>
           <LanguageSwitcher language={language} onChange={setLanguage} />
         </div>
@@ -47,14 +52,17 @@ export default function HomePage() {
           {t("quick_eligibility", language)}
         </h2>
         <ul className="mt-3 space-y-2 text-sm text-[var(--on-surface)]">
-          <li className="rounded-md bg-[var(--surface-container-lowest)] px-3 py-2">
-            {t("quick_rule_age", language)}
+          <li className="flex items-start gap-3 rounded-md bg-[var(--surface-container-lowest)] px-3 py-2">
+            <span aria-hidden="true" className="text-base text-[var(--secondary)]">✔</span>
+            <span className="leading-tight">{t("quick_rule_age", language)}</span>
           </li>
-          <li className="rounded-md bg-[var(--surface-container-lowest)] px-3 py-2">
-            {t("quick_rule_citizen", language)}
+          <li className="flex items-start gap-3 rounded-md bg-[var(--surface-container-lowest)] px-3 py-2">
+            <span aria-hidden="true" className="text-base text-[var(--secondary)]">✔</span>
+            <span className="leading-tight">{t("quick_rule_citizen", language)}</span>
           </li>
-          <li className="rounded-md bg-[var(--surface-container-lowest)] px-3 py-2">
-            {t("quick_rule_registered", language)}
+          <li className="flex items-start gap-3 rounded-md bg-[var(--surface-container-lowest)] px-3 py-2">
+            <span aria-hidden="true" className="text-base text-[var(--tertiary)]">⚠️</span>
+            <span className="leading-tight">{t("quick_rule_registered", language)}</span>
           </li>
         </ul>
       </section>
@@ -66,13 +74,7 @@ export default function HomePage() {
         <QuestionFlow language={language} />
       </section>
 
-      <footer className="mb-4 mt-6 rounded-xl border border-[var(--outline-variant)] bg-[var(--surface-container-low)] p-4 text-sm text-[var(--on-surface)]">
-        <p>{t("trust_source", language)}</p>
-        <p className="mt-2">
-          {t("last_updated", language)}: {electionData.lastUpdated || t("not_announced", language)}
-        </p>
-        <p className="mt-2">{t("disclaimer", language)}</p>
-      </footer>
+      <TrustSection language={language} />
     </main>
   );
 }

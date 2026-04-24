@@ -6,6 +6,7 @@ import { Suspense, useEffect, useMemo, useState } from "react";
 import LanguageSwitcher from "@/components/LanguageSwitcher";
 import ResultCard from "@/components/ResultCard";
 import FeedbackForm from "@/components/FeedbackForm";
+import TrustSection from "@/components/TrustSection";
 import electionData from "@/data/maharashtraElection.json";
 import { getDecision } from "@/lib/decisionEngine";
 import { Language, RegistrationAnswer, UserAnswers, YesNo } from "@/lib/types";
@@ -138,11 +139,7 @@ function ResultPageContent() {
         <FeedbackForm language={language} />
       </section>
 
-      <footer className="mb-4 mt-4 rounded-xl border border-[var(--outline-variant)] bg-[var(--surface-container-low)] p-4 text-sm text-[var(--on-surface)]">
-        <p>{t("trust_source", language)}</p>
-        <p className="mt-2">{t("help_label", language)}</p>
-        <p className="mt-2">{t("disclaimer", language)}</p>
-      </footer>
+      <TrustSection language={language} />
     </main>
   );
 }

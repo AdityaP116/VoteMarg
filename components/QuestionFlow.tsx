@@ -1,7 +1,7 @@
 "use client";
 
 import { AnimatePresence, motion } from "framer-motion";
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
 import AnswerSummary from "@/components/AnswerSummary";
 import DropdownQuestion from "@/components/DropdownQuestion";
@@ -25,6 +25,12 @@ export default function QuestionFlow({ language }: QuestionFlowProps) {
   const router = useRouter();
   const totalSteps = 4;
   const [currentStep, setCurrentStep] = useState(0);
+
+  // Prefetch the result route immediately so Turbopack compiles it in the
+  // background while the user answers questions → instant navigation on submit
+  useEffect(() => {
+    router.prefetch("/result");
+  }, [router]);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState<string>("");
   const [answers, setAnswers] = useState<AnswersState>({
@@ -168,7 +174,6 @@ export default function QuestionFlow({ language }: QuestionFlowProps) {
           ]}
           selectedValue={answers.registered}
           onSelect={(value) => handleRegisteredSelect(value as RegistrationAnswer)}
-          columns={3}
         />
       );
     }

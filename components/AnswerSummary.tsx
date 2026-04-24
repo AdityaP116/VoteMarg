@@ -36,8 +36,8 @@ export default function AnswerSummary({
   }
 
   return (
-    <section className="rounded-lg border border-[var(--outline-variant)] bg-[var(--surface-container-low)] p-2">
-      <div className="flex gap-2 overflow-x-auto pb-1">
+    <section className="py-1">
+      <div className="flex gap-2 overflow-x-auto pb-1" style={{ scrollbarWidth: "none" }}>
         {visibleFields.map((field) => {
           const label = labels?.[field] ?? fallbackLabels[field];
           const value = answers[field];
@@ -47,7 +47,7 @@ export default function AnswerSummary({
             return (
               <span
                 key={field}
-                className="whitespace-nowrap rounded-full border border-[var(--outline-variant)] bg-[var(--surface-container-lowest)] px-3 py-1 text-xs font-medium text-[var(--on-surface)]"
+                className="whitespace-nowrap rounded-full bg-[var(--surface-container-low)] px-3 py-1.5 text-xs font-medium text-[var(--on-surface)]"
               >
                 {text}
               </span>
@@ -59,7 +59,7 @@ export default function AnswerSummary({
               key={field}
               type="button"
               onClick={() => onChipClick(field)}
-              className="whitespace-nowrap rounded-full border border-[var(--outline-variant)] bg-[var(--surface-container-lowest)] px-3 py-1 text-xs font-medium text-[var(--on-surface)] transition-colors hover:border-[var(--primary)]"
+              className="whitespace-nowrap rounded-full bg-[var(--surface-container-low)] px-3 py-1.5 text-xs font-medium text-[var(--on-surface)] transition-colors hover:bg-[var(--surface-container-high)]"
             >
               {text}
             </button>
