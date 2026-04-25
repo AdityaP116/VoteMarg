@@ -20,6 +20,10 @@ export default function FeedbackForm({ language }: FeedbackFormProps) {
     setIsSubmitting(true);
     try {
       const { db } = await import("@/lib/firebase");
+      if (!db) {
+        console.warn("Firestore is not initialized. Check your Firebase configuration.");
+        return;
+      }
       const { collection, addDoc, serverTimestamp } = await import("firebase/firestore");
 
       await addDoc(collection(db, "feedback"), {

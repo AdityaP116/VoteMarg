@@ -64,6 +64,10 @@ function ResultPageContent() {
     const logResult = async () => {
       try {
         const { db } = await import("@/lib/firebase");
+        if (!db) {
+          console.warn("Firestore is not initialized. Results will not be logged.");
+          return;
+        }
         const { collection, addDoc, serverTimestamp } = await import("firebase/firestore");
         
         await addDoc(collection(db, "results"), {
