@@ -7,11 +7,12 @@ import AnswerSummary from "@/components/AnswerSummary";
 import DropdownQuestion from "@/components/DropdownQuestion";
 import ProgressBar from "@/components/ProgressBar";
 import QuestionCard from "@/components/QuestionCard";
-import { Language, RegistrationAnswer, YesNo } from "@/lib/types";
+import { Language, RegistrationAnswer, StateElectionData, YesNo } from "@/lib/types";
 import { t } from "@/lib/translations";
 
 interface QuestionFlowProps {
   language: Language;
+  stateData?: StateElectionData;
 }
 
 interface AnswersState {
@@ -21,7 +22,7 @@ interface AnswersState {
   moved: YesNo | null;
 }
 
-export default function QuestionFlow({ language, stateData }: QuestionFlowProps & { stateData?: any }) {
+export default function QuestionFlow({ language, stateData }: QuestionFlowProps) {
   const router = useRouter();
   const totalSteps = 4;
   const [currentStep, setCurrentStep] = useState(0);
