@@ -232,9 +232,11 @@ export default function QuestionFlow({ language, stateData }: QuestionFlowProps)
       </AnimatePresence>
 
       {error && (
-        <p className="rounded-md border border-[var(--error)] bg-[var(--error-container)] px-3 py-2 text-sm text-[var(--on-error-container)]">
-          {error}
-        </p>
+        <div aria-live="assertive" role="alert">
+          <p className="rounded-md border border-[var(--error)] bg-[var(--error-container)] px-3 py-2 text-sm text-[var(--on-error-container)]">
+            {error}
+          </p>
+        </div>
       )}
 
       <div className="flex items-center justify-between gap-2 pt-2 border-t border-[var(--outline-variant)] mt-4">

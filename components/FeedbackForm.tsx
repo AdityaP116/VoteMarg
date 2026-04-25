@@ -19,16 +19,28 @@ export default function FeedbackForm({ language }: FeedbackFormProps) {
 
     setIsSubmitting(true);
     try {
-      const { db } = await import("@/lib/firebase");
+      const { db, auth } = await import("@/lib/firebase");
       if (!db) {
         console.warn("Firestore is not initialized. Check your Firebase configuration.");
         return;
       }
       const { collection, addDoc, serverTimestamp } = await import("firebase/firestore");
 
+      let userId = "anonymous";
+      if (auth) {
+        try {
+          const { signInAnonymously } = await import("firebase/auth");
+          const userCredential = await signInAnonymously(auth);
+          userId = userCredential.user.uid;
+        } catch (e) {
+          // Firebase Auth not configured or enabled; gracefully fallback to anonymous string
+        }
+      }
+
       await addDoc(collection(db, "feedback"), {
         text: feedback,
         language,
+        userId,
         timestamp: serverTimestamp(),
       });
 
@@ -59,6 +71,7 @@ export default function FeedbackForm({ language }: FeedbackFormProps) {
         <textarea
           id="feedback-text"
           name="feedback"
+          aria-label={t("feedback_title", language)}
           value={feedback}
           onChange={(e) => setFeedback(e.target.value)}
           placeholder={t("feedback_placeholder", language)}

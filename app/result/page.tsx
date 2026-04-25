@@ -9,7 +9,6 @@ import FeedbackForm from "@/components/FeedbackForm";
 import TrustSection from "@/components/TrustSection";
 import { statesData } from "@/data/statesData";
 import { STATE_STORAGE_KEY } from "@/components/OnboardingFlow";
-import { getDecision } from "@/lib/decisionEngine";
 import { Language, RegistrationAnswer, UserAnswers, YesNo } from "@/lib/types";
 import {
   DEFAULT_LANGUAGE,
@@ -57,36 +56,53 @@ function ResultPageContent() {
     };
   }, [searchParams]);
 
-  const result = useMemo(() => getDecision(answers), [answers]);
+  const [result, setResult] = useState<any>(null);
+  const [error, setError] = useState<string | null>(null);
 
-  // Log results to Firestore
   useEffect(() => {
-    const logResult = async () => {
-      try {
-        const { db } = await import("@/lib/firebase");
-        if (!db) {
-          console.warn("Firestore is not initialized. Results will not be logged.");
-          return;
-        }
-        const { collection, addDoc, serverTimestamp } = await import("firebase/firestore");
-        
-        await addDoc(collection(db, "results"), {
-          ...answers,
-          status: result.status,
-          state: selectedState,
-          timestamp: serverTimestamp(),
-          userAgent: navigator.userAgent,
-          language: language
-        });
-      } catch (error) {
-        console.error("Error logging result to Firestore:", error);
-      }
-    };
+    async function fetchDecision() {
+      if (answers.age === 0) return; // Wait for valid params
 
-    if (answers.age > 0) {
-      logResult();
+      try {
+        let userId = 'anonymous';
+        try {
+          const { auth } = await import("@/lib/firebase");
+          if (auth) {
+            const { signInAnonymously } = await import("firebase/auth");
+            const userCredential = await signInAnonymously(auth);
+            userId = userCredential.user.uid;
+          }
+        } catch (authError) {
+          // Firebase Auth not configured or enabled; gracefully fallback to anonymous string
+        }
+
+        const response = await fetch('/api/check', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({
+            ...answers,
+            state: selectedState,
+            language: language,
+            userId: userId
+          })
+        });
+
+        if (!response.ok) {
+          throw new Error('Failed to fetch decision');
+        }
+
+        const data = await response.json();
+        setResult(data.decision);
+      } catch (err) {
+        console.error(err);
+        setError('An error occurred while checking eligibility.');
+      }
     }
-  }, [answers, result.status, language, selectedState]);
+
+    fetchDecision();
+  }, [answers, selectedState, language]);
 
   const headerContent = (
     <Link
@@ -113,7 +129,17 @@ function ResultPageContent() {
           {t("result_header", language)}
         </h2>
         
-        <ResultCard result={result} language={language} />
+        {error ? (
+          <div className="rounded-xl border border-[var(--error)] bg-[var(--error-container)] p-4 text-[var(--on-error-container)]">
+            <p className="font-bold">{error}</p>
+          </div>
+        ) : !result ? (
+          <div className="rounded-xl border border-[var(--outline-variant)] bg-[var(--surface-container-lowest)] p-4 text-sm text-[var(--on-surface)]">
+            Analyzing your eligibility securely...
+          </div>
+        ) : (
+          <ResultCard result={result} language={language} />
+        )}
 
         <div className="rounded-xl border border-[var(--outline-variant)] bg-[var(--surface-container-low)] p-5 shadow-sm">
           <div className="border-b border-[var(--outline-variant)] pb-3 mb-4 flex items-center justify-between">
