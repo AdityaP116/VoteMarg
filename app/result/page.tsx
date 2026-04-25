@@ -9,7 +9,7 @@ import FeedbackForm from "@/components/FeedbackForm";
 import TrustSection from "@/components/TrustSection";
 import { statesData } from "@/data/statesData";
 import { STATE_STORAGE_KEY } from "@/components/OnboardingFlow";
-import { Language, RegistrationAnswer, UserAnswers, YesNo } from "@/lib/types";
+import { DecisionResult, Language, RegistrationAnswer, UserAnswers, YesNo } from "@/lib/types";
 import {
   DEFAULT_LANGUAGE,
   LANGUAGE_STORAGE_KEY,
@@ -56,7 +56,7 @@ function ResultPageContent() {
     };
   }, [searchParams]);
 
-  const [result, setResult] = useState<any>(null);
+  const [result, setResult] = useState<DecisionResult | null>(null);
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
@@ -72,7 +72,7 @@ function ResultPageContent() {
             const userCredential = await signInAnonymously(auth);
             userId = userCredential.user.uid;
           }
-        } catch (authError) {
+        } catch {
           // Firebase Auth not configured or enabled; gracefully fallback to anonymous string
         }
 

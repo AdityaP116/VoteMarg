@@ -1,4 +1,4 @@
-import { describe, it, expect, vi, beforeEach } from 'vitest';
+import { describe, it, expect, vi } from 'vitest';
 import { POST } from './route';
 import { NextRequest } from 'next/server';
 
@@ -14,7 +14,7 @@ vi.mock('firebase/firestore', () => ({
 }));
 
 describe('POST /api/check', () => {
-  const createRequest = (body: any) => {
+  const createRequest = (body: Record<string, unknown>) => {
     return new NextRequest('http://localhost/api/check', {
       method: 'POST',
       body: JSON.stringify(body)

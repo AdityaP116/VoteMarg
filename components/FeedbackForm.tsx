@@ -32,7 +32,7 @@ export default function FeedbackForm({ language }: FeedbackFormProps) {
           const { signInAnonymously } = await import("firebase/auth");
           const userCredential = await signInAnonymously(auth);
           userId = userCredential.user.uid;
-        } catch (e) {
+        } catch {
           // Firebase Auth not configured or enabled; gracefully fallback to anonymous string
         }
       }
