@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import LanguageSwitcher from "@/components/LanguageSwitcher";
 import QuestionFlow from "@/components/QuestionFlow";
 import TrustSection from "@/components/TrustSection";
+import OnboardingFlow, { STATE_STORAGE_KEY } from "@/components/OnboardingFlow";
 import { Language } from "@/lib/types";
 import {
   DEFAULT_LANGUAGE,
@@ -14,11 +15,32 @@ import {
 
 export default function HomePage() {
   const [language, setLanguage] = useState<Language>(DEFAULT_LANGUAGE);
+  const [showOnboarding, setShowOnboarding] = useState<boolean>(true);
+  const [isMounted, setIsMounted] = useState<boolean>(false);
 
   useEffect(() => {
-    const savedLanguage = resolveLanguage(localStorage.getItem(LANGUAGE_STORAGE_KEY));
-    setLanguage(savedLanguage);
+    setIsMounted(true);
+    const savedLanguage = localStorage.getItem(LANGUAGE_STORAGE_KEY);
+    const savedState = localStorage.getItem(STATE_STORAGE_KEY);
+    
+    if (savedLanguage && savedState) {
+      setShowOnboarding(false);
+      setLanguage(resolveLanguage(savedLanguage));
+    }
   }, []);
+
+  const handleOnboardingComplete = () => {
+    setShowOnboarding(false);
+    setLanguage(resolveLanguage(localStorage.getItem(LANGUAGE_STORAGE_KEY)));
+  };
+
+  if (!isMounted) {
+    return null; // Or a loading spinner
+  }
+
+  if (showOnboarding) {
+    return <OnboardingFlow onComplete={handleOnboardingComplete} />;
+  }
 
   return (
     <main className="mx-auto min-h-screen w-full max-w-3xl px-4 py-4 sm:px-6">
