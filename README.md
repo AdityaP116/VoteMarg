@@ -6,6 +6,7 @@ A modern, interactive web application designed to assist citizens of Maharashtra
 
 ## 🚀 Features
 
+- **Smooth Onboarding Flow**: Initial setup screen to configure the user's preferred language and state seamlessly, securely stored locally.
 - **Multi-language Support**: Fully localized in English, Hindi, and Marathi.
 - **Quick Eligibility Check**: Simple flow to determine if you are eligible to vote.
 - **Interactive Progress**: Real-time progress tracking through the eligibility steps.
