@@ -53,6 +53,8 @@ export default function FeedbackForm({ language }: FeedbackFormProps) {
       </h3>
       <form onSubmit={handleSubmit} className="mt-3">
         <textarea
+          id="feedback-text"
+          name="feedback"
           value={feedback}
           onChange={(e) => setFeedback(e.target.value)}
           placeholder={t("feedback_placeholder", language)}

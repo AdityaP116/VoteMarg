@@ -39,6 +39,15 @@ steps:
       - '--platform'
       - 'managed'
       - '--allow-unauthenticated'
+      - '--memory'
+      - '1Gi'
+      - '--cpu'
+      - '1'
+      - '--startup-cpu-boost'
+      - '--timeout'
+      - '300'
+
+timeout: '1200s'
 
 substitutions:
   _FIREBASE_API_KEY: 'AIzaSyB9E8JL0JnbxGZfPh9MKvOEfBZBjjfkTU8'

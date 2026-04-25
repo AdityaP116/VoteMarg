@@ -29,7 +29,7 @@ export default function ResultCard({ result, language }: ResultCardProps) {
   const translatedDocuments = result.documents.map((document) => translateKey(document));
 
   return (
-    <article className="space-y-5 rounded-xl border border-[var(--outline-variant)] bg-[var(--surface-container-lowest)] p-4">
+    <article className="space-y-6 rounded-xl border border-[var(--outline-variant)] bg-[var(--surface-container-lowest)] p-5 shadow-sm">
       <div className={`rounded-lg border-l-4 p-4 ${statusClassMap[result.status]}`}>
         <p className="text-xs font-bold uppercase tracking-wide opacity-80">
           {t("status_label", language)}: {t(statusLabelKeyMap[result.status], language)}
@@ -61,35 +61,49 @@ export default function ResultCard({ result, language }: ResultCardProps) {
           {translatedDocuments.map((document) => (
             <li
               key={document}
-              className="flex items-start gap-3 rounded-md border border-[var(--outline-variant)] bg-[var(--surface-container-lowest)] px-3 py-2"
+              className="flex items-start gap-3 rounded-md border border-[var(--outline-variant)] bg-[var(--surface-container-lowest)] px-3 py-2 shadow-sm"
             >
-              <span aria-hidden="true" className="text-base text-[var(--primary)] leading-tight">📄</span>
+              <div className="mt-0.5 flex h-4 w-4 items-center justify-center rounded border border-[var(--primary)] text-[var(--primary)]">
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  width="12"
+                  height="12"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="4"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                >
+                  <path d="M20 6 9 17l-5-5" />
+                </svg>
+              </div>
               <span className="leading-tight">{document}</span>
             </li>
           ))}
         </ul>
       </section>
 
-      <section className="space-y-3">
-        <h3 className="text-base font-semibold text-[var(--on-surface)]">
-          {t("links_label", language)}
-        </h3>
+      <section className="space-y-4">
         <div className="flex flex-col gap-3">
-          {result.links.map((link, index) => (
-            <a
-              key={`${link.url}-${link.label}`}
-              href={link.url}
-              target={link.url.startsWith("http") ? "_blank" : undefined}
-              rel={link.url.startsWith("http") ? "noreferrer" : undefined}
-              className={`flex min-h-[48px] items-center justify-center rounded-md px-4 py-3 text-sm font-semibold transition-transform active:scale-95 ${
-                index === 0
-                  ? "bg-[var(--primary)] text-[var(--on-primary)] shadow-md hover:bg-[var(--primary-container)]"
-                  : "border-2 border-[var(--primary)] bg-transparent text-[var(--primary)] hover:bg-[var(--surface-container-low)]"
-              }`}
-            >
-              {translateKey(link.label)}
-            </a>
-          ))}
+          {result.links.map((link, index) => {
+            const isPrimary = index === 0;
+            return (
+              <a
+                key={`${link.url}-${link.label}`}
+                href={link.url}
+                target={link.url.startsWith("http") ? "_blank" : undefined}
+                rel={link.url.startsWith("http") ? "noreferrer" : undefined}
+                className={`flex min-h-[52px] items-center justify-center rounded-xl px-4 py-3 text-base font-bold transition-all active:scale-95 ${
+                  isPrimary
+                    ? "bg-[var(--primary)] text-[var(--on-primary)] shadow-md hover:opacity-90"
+                    : "border-2 border-[var(--primary)] bg-transparent text-[var(--primary)] hover:bg-[var(--surface-container-low)]"
+                }`}
+              >
+                {translateKey(link.label)}
+              </a>
+            );
+          })}
         </div>
       </section>
     </article>

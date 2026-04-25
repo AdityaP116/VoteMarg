@@ -35,6 +35,7 @@ export default function DropdownQuestion({
         </label>
         <select
           id="age-select"
+          name="age"
           value={selectedValue ?? ""}
           onChange={(event) => {
             const value = event.target.value;

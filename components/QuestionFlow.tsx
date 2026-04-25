@@ -21,13 +21,11 @@ interface AnswersState {
   moved: YesNo | null;
 }
 
-export default function QuestionFlow({ language }: QuestionFlowProps) {
+export default function QuestionFlow({ language, stateData }: QuestionFlowProps & { stateData?: any }) {
   const router = useRouter();
   const totalSteps = 4;
   const [currentStep, setCurrentStep] = useState(0);
 
-  // Prefetch the result route immediately so Turbopack compiles it in the
-  // background while the user answers questions → instant navigation on submit
   useEffect(() => {
     router.prefetch("/result");
   }, [router]);
@@ -108,12 +106,12 @@ export default function QuestionFlow({ language }: QuestionFlowProps) {
 
   const handleCitizenshipSelect = (value: YesNo) => {
     setAnswers((prev) => ({ ...prev, citizenship: value }));
-    setTimeout(goToNextQuestion, 140);
+    setTimeout(goToNextQuestion, 100);
   };
 
   const handleRegisteredSelect = (value: RegistrationAnswer) => {
     setAnswers((prev) => ({ ...prev, registered: value }));
-    setTimeout(goToNextQuestion, 140);
+    setTimeout(goToNextQuestion, 100);
   };
 
   const handleMovedSelect = (value: YesNo) => {
@@ -128,7 +126,7 @@ export default function QuestionFlow({ language }: QuestionFlowProps) {
 
     setTimeout(() => {
       submitAnswers(nextAnswers);
-    }, 180);
+    }, 100);
   };
 
   const renderCurrentQuestion = () => {
@@ -206,8 +204,13 @@ export default function QuestionFlow({ language }: QuestionFlowProps) {
   };
 
   return (
-    <div className="space-y-4 rounded-xl border border-[var(--outline-variant)] bg-[var(--surface-container-lowest)] p-4">
-      <ProgressBar currentStep={currentStep} totalSteps={totalSteps} language={language} />
+    <div className="space-y-6">
+      <div className="pb-4 border-b border-[var(--outline-variant)]">
+        <h3 className="text-sm font-bold uppercase tracking-wider text-[var(--primary)] mb-4">
+          {stateData?.name} Eligibility Check
+        </h3>
+        <ProgressBar currentStep={currentStep} totalSteps={totalSteps} language={language} />
+      </div>
 
       <AnswerSummary
         answers={summaryAnswers}
@@ -233,7 +236,7 @@ export default function QuestionFlow({ language }: QuestionFlowProps) {
         </p>
       )}
 
-      <div className="flex items-center justify-between gap-2">
+      <div className="flex items-center justify-between gap-2 pt-2 border-t border-[var(--outline-variant)] mt-4">
         <motion.button
           type="button"
           whileTap={{ scale: 0.98 }}
@@ -245,7 +248,7 @@ export default function QuestionFlow({ language }: QuestionFlowProps) {
         </motion.button>
 
         {isSubmitting && (
-          <p className="text-sm font-medium text-[var(--on-surface-variant)]">
+          <p className="text-sm font-medium text-[var(--primary)]">
             {t("preparing_result", language)}
           </p>
         )}

@@ -29,7 +29,7 @@ export default function QuestionCard({
   onSelect
 }: QuestionCardProps) {
   return (
-    <section className="rounded-xl border border-[var(--outline-variant)] bg-[var(--surface-container-low)] p-4">
+    <section className="rounded-xl border border-[var(--outline-variant)] bg-[var(--surface-container-low)] p-4 shadow-sm">
       <h3 className="text-base font-semibold leading-6 text-[var(--on-surface)]">
         {question}
       </h3>

@@ -1,33 +1,35 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import LanguageSelection from "./LanguageSelection";
 import StateSelection from "./StateSelection";
-import { LANGUAGE_STORAGE_KEY } from "@/lib/translations";
+import { LANGUAGE_STORAGE_KEY, DEFAULT_LANGUAGE, resolveLanguage } from "@/lib/translations";
+import { Language } from "@/lib/types";
 
 interface OnboardingFlowProps {
   onComplete: () => void;
+  forceStep?: "language" | "state";
 }
 
 export const STATE_STORAGE_KEY = "mea_state";
 
-export default function OnboardingFlow({ onComplete }: OnboardingFlowProps) {
-  const [step, setStep] = useState<"language" | "state">(() => {
+export default function OnboardingFlow({ onComplete, forceStep }: OnboardingFlowProps) {
+  const [language, setLanguage] = useState<Language>(() => {
     if (typeof window !== "undefined") {
-      const savedLang = localStorage.getItem(LANGUAGE_STORAGE_KEY);
-      const savedState = localStorage.getItem(STATE_STORAGE_KEY);
-      if (savedLang && savedState) {
-        // Edge case: parent should have skipped, but just in case
-        setTimeout(onComplete, 0);
-      } else if (savedLang && !savedState) {
-        return "state";
-      }
+      return resolveLanguage(localStorage.getItem(LANGUAGE_STORAGE_KEY));
     }
+    return DEFAULT_LANGUAGE;
+  });
+
+  const [step, setStep] = useState<"language" | "state">(() => {
+    if (forceStep) return forceStep;
     return "language";
   });
 
   const handleLanguageSelect = (lang: string) => {
-    localStorage.setItem(LANGUAGE_STORAGE_KEY, lang);
+    const resolved = resolveLanguage(lang);
+    localStorage.setItem(LANGUAGE_STORAGE_KEY, resolved);
+    setLanguage(resolved);
     setStep("state");
   };
 
@@ -37,12 +39,13 @@ export default function OnboardingFlow({ onComplete }: OnboardingFlowProps) {
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex flex-col bg-[var(--surface)] p-4 sm:p-6 sm:items-center sm:justify-center">
-      <div className="w-full max-w-md flex-1 sm:flex-none sm:rounded-2xl sm:border sm:border-[var(--outline-variant)] sm:bg-[var(--surface-container)] sm:p-6 sm:shadow-lg sm:h-[600px] flex flex-col pt-8 sm:pt-6">
+    <div className="fixed inset-0 z-50 flex flex-col bg-[var(--surface)] p-6 overflow-y-auto">
+      <div className="mx-auto w-full max-w-md flex-1 flex flex-col justify-center">
         {step === "language" ? (
-          <LanguageSelection onSelect={handleLanguageSelect} />
+          <LanguageSelection language={language} onSelect={handleLanguageSelect} />
         ) : (
           <StateSelection 
+            language={language}
             onSelect={handleStateSelect} 
             onBack={() => setStep("language")} 
           />

@@ -41,8 +41,10 @@ export interface ElectionEntry {
   resultDate: string;
 }
 
-export interface MaharashtraElectionData {
-  state: string;
+export interface StateElectionData {
+  name: string;
   lastUpdated: string;
   elections: ElectionEntry[];
 }
+
+export type StateDataMap = Record<string, StateElectionData>;

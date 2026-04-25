@@ -468,6 +468,36 @@ export const translations = {
     en: "Thank you for your feedback!",
     hi: "आपके सुझाव के लिए धन्यवाद!",
     mr: "तुमच्या सूचनेबद्दल धन्यवाद!"
+  },
+  home_headline: {
+    en: "Welcome! Let's quickly check your voting eligibility and guide your next steps.",
+    hi: "नमस्ते! आइए जल्दी से आपकी मतदान पात्रता जांचें और आपके अगले चरणों के बारे में जानें।",
+    mr: "नमस्कार! तुमची मतदानाची पात्रता पटकन तपासा आणि पुढील पायऱ्या जाणून घ्या."
+  },
+  home_trust_line: {
+    en: "Based on official election guidelines",
+    hi: "आधिकारिक चुनाव दिशानिर्देशों पर आधारित",
+    mr: "अधिकृत निवडणूक मार्गदर्शक तत्त्वांवर आधारित"
+  },
+  language_subtitle: {
+    en: "Choose your language",
+    hi: "अपनी भाषा चुनें",
+    mr: "तुमची भाषा निवडा"
+  },
+  state_subtitle: {
+    en: "Select your state",
+    hi: "अपना राज्य चुनें",
+    mr: "तुमचे राज्य निवडा"
+  },
+  change_state: {
+    en: "Change State",
+    hi: "राज्य बदलें",
+    mr: "राज्य बदला"
+  },
+  home_nav: {
+    en: "Home",
+    hi: "होम",
+    mr: "मुख्य पान"
   }
 } as const;
 
