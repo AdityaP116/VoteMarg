@@ -12,22 +12,19 @@ interface OnboardingFlowProps {
 export const STATE_STORAGE_KEY = "mea_state";
 
 export default function OnboardingFlow({ onComplete }: OnboardingFlowProps) {
-  const [step, setStep] = useState<"language" | "state">("language");
-  const [isMounted, setIsMounted] = useState(false);
-
-  useEffect(() => {
-    setIsMounted(true);
-    // If both are already set, skip onboarding
-    const savedLang = localStorage.getItem(LANGUAGE_STORAGE_KEY);
-    const savedState = localStorage.getItem(STATE_STORAGE_KEY);
-    if (savedLang && savedState) {
-      onComplete();
-    } else if (savedLang && !savedState) {
-      setStep("state");
+  const [step, setStep] = useState<"language" | "state">(() => {
+    if (typeof window !== "undefined") {
+      const savedLang = localStorage.getItem(LANGUAGE_STORAGE_KEY);
+      const savedState = localStorage.getItem(STATE_STORAGE_KEY);
+      if (savedLang && savedState) {
+        // Edge case: parent should have skipped, but just in case
+        setTimeout(onComplete, 0);
+      } else if (savedLang && !savedState) {
+        return "state";
+      }
     }
-  }, [onComplete]);
-
-  if (!isMounted) return null;
+    return "language";
+  });
 
   const handleLanguageSelect = (lang: string) => {
     localStorage.setItem(LANGUAGE_STORAGE_KEY, lang);
