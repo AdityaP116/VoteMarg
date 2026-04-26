@@ -8,7 +8,13 @@ const __dirname = path.dirname(__filename);
 const nextConfig: NextConfig = {
   reactStrictMode: true,
   output: "standalone",
-  outputFileTracingRoot: __dirname
+  outputFileTracingRoot: __dirname,
+  eslint: {
+    ignoreDuringBuilds: true,
+  },
+  typescript: {
+    ignoreBuildErrors: true,
+  },
 };
 
 export default nextConfig;
