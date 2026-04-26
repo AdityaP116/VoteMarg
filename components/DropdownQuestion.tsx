@@ -11,6 +11,7 @@ interface DropdownQuestionProps {
   onChange: (value: number | null) => void;
   onContinue: () => void;
   disabled?: boolean;
+  headingRef?: React.RefObject<HTMLHeadingElement | null>;
 }
 
 export default function DropdownQuestion({
@@ -21,11 +22,16 @@ export default function DropdownQuestion({
   continueLabel,
   onChange,
   onContinue,
-  disabled = false
+  disabled = false,
+  headingRef
 }: DropdownQuestionProps) {
   return (
     <section className="rounded-xl border border-[var(--outline-variant)] bg-[var(--surface-container-low)] p-4">
-      <h3 className="text-base font-semibold leading-6 text-[var(--on-surface)]">
+      <h3 
+        ref={headingRef}
+        tabIndex={-1}
+        className="text-base font-semibold leading-6 text-[var(--on-surface)] outline-none"
+      >
         {question}
       </h3>
 

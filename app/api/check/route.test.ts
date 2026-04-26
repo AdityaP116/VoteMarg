@@ -2,15 +2,17 @@ import { describe, it, expect, vi } from 'vitest';
 import { POST } from './route';
 import { NextRequest } from 'next/server';
 
-// Mock Firebase to avoid actual network calls during testing
-vi.mock('@/lib/firebase', () => ({
-  db: {}
-}));
-
-vi.mock('firebase/firestore', () => ({
-  collection: vi.fn(),
-  addDoc: vi.fn().mockResolvedValue({ id: 'test-doc-id' }),
-  serverTimestamp: vi.fn()
+// Mock Firebase Admin to avoid actual network calls during testing
+vi.mock('@/lib/firebaseAdmin', () => ({
+  adminDb: {
+    collection: vi.fn().mockReturnValue({
+      add: vi.fn().mockResolvedValue({ id: 'test-doc-id' })
+    })
+  },
+  log: {
+    entry: vi.fn(),
+    write: vi.fn().mockResolvedValue(true)
+  }
 }));
 
 describe('POST /api/check', () => {

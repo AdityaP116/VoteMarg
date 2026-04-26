@@ -9,38 +9,38 @@ Built as a scalable, state-driven platform, VoteMarg provides real-time voting e
 ## 🌟 Key Features
 
 - **Secure Server-Side Engine**: Eligibility decisions are processed entirely on a secure Next.js API backend to prevent client-side tampering.
-- **Strict Input Validation**: End-to-end type safety and rigorous input sanitization using **Zod**.
-- **State-Driven Architecture**: Supports all Indian states with a centralized data map. Switch states instantly with localized data rendering.
-- **Multi-Lingual Support**: Fully localized in **English**, **Hindi (हिंदी)**, and **Marathi (मराठी)**.
-- **Accessible (A11y)**: Built with WCAG compliance in mind, utilizing ARIA live regions (`role="alert"`) and explicit labels for screen-reader compatibility.
-- **Automated Testing Suite**: 100% core test coverage using **Vitest** for unit and API integration testing.
-- **Data Insights**: Anonymous authentication and logging via **Firebase Firestore** to identify common voter hurdles securely.
-- **Standardized Premium UI**: A unified, high-fidelity design system using CSS tokens, fluid animations, and a standardized page layout.
+- **Data-Driven Logic**: Decisions are mapped via a centralized configuration (`data/decisionData.ts`), decoupling rules from implementation.
+- **Scalable Localization**: Uses a lightweight JSON-based localization system for **English**, **Hindi**, and **Marathi**, optimized for fast IDE performance and bundle size.
+- **Accessible (A11y)**: WCAG compliant with focus management, ARIA live regions, and explicit roles.
+- **Google Services Integration**:
+  - **Google Analytics & GTM**: Granular event tracking for user flow drop-offs.
+  - **Google Maps**: Dynamic polling station location rendering.
+  - **Cloud Logging**: Backend audit trails for eligibility checks.
+  - **Firebase Admin**: Secure server-side data persistence.
 
 ## 🛠️ Tech Stack
 
 - **Frontend**: [Next.js 15](https://nextjs.org/) (App Router, Standalone Mode)
-- **Backend API**: Next.js Serverless Routes running natively on Cloud Run
-- **Validation & Testing**: [Zod](https://zod.dev/) for schemas, [Vitest](https://vitest.dev/) for unit/integration testing
-- **Styling & UI**: [Tailwind CSS](https://tailwindcss.com/) & [Framer Motion](https://www.framer.com/motion/)
-- **Database & Auth**: [Firebase](https://firebase.google.com/) (Firestore, Anonymous Auth, Analytics)
-- **Deployment & CI/CD**: [Google Cloud Run](https://cloud.google.com/run) via Docker and Cloud Build with pre-deploy test gates.
+- **Hooks & Logic**: Custom Hooks (`hooks/`) and Data-Driven Engine (`lib/decisionEngine.ts`)
+- **Validation**: [Zod](https://zod.dev/)
+- **Styling**: [Tailwind CSS](https://tailwindcss.com/) & [Framer Motion](https://www.framer.com/motion/)
+- **Infrastructure**: [Google Cloud Run](https://cloud.google.com/run), [Secret Manager](https://cloud.google.com/secret-manager), [Cloud Build](https://cloud.google.com/build).
 
 ## 📂 Project Structure
 
 ```text
 VoteMarg/
 ├── app/
-│   ├── api/check/      # Secure API route for eligibility verification
+│   ├── api/check/      # Secure API route with Admin SDK logging
 │   └── result/         # Dynamic result rendering layer
-├── components/         # Standardized UI Components (Layouts, Flows, Cards)
-├── data/               # Centralized state-driven election data map
-├── lib/                # Core logic, Decision Engine, Translations, Types, Validations
-├── tests/              # (Co-located) Vitest suites for engine and API
-├── public/             # Static assets (Logos, Icons)
-├── Dockerfile          # Multi-stage production container configuration
-├── vitest.config.mts   # Test runner configuration
-└── cloudbuild.yaml     # CI/CD configuration for Google Cloud Build
+├── components/         # Standardized UI Components (Atomic Design)
+├── data/               # Election Data & Decision Engine Rules
+├── hooks/              # Custom Hooks for encapsulated business logic
+├── lib/                # Core helpers (i18n, Analytics, Firebase Admin)
+│   └── locales/        # JSON translation files
+├── tests/              # (Co-located) Vitest suites
+├── Dockerfile          # Multi-stage production container
+└── cloudbuild.yaml     # CI/CD with Secret Manager integration
 ```
 
 ## 💻 Local Development
@@ -57,17 +57,24 @@ VoteMarg/
    ```
 
 3. **Configure Environment**:
-   Create a `.env.local` file with your Firebase credentials:
+   Create a `.env.local` file with your credentials:
    ```env
+   # Firebase Client
    NEXT_PUBLIC_FIREBASE_API_KEY=your_api_key
    NEXT_PUBLIC_FIREBASE_PROJECT_ID=your_project_id
    NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN=your_project_id.firebaseapp.com
    NEXT_PUBLIC_FIREBASE_DATABASE_URL=https://your_project_id-default-rtdb.firebaseio.com
-   NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET=your_project_id.appspot.com
+
+   # Google Services
+   NEXT_PUBLIC_GOOGLE_MAPS_API_KEY=your_maps_key
+   NEXT_PUBLIC_GTM_ID=GTM-XXXXXX
+   
+   # Secret for Google Cloud Logging (Server-side)
+   GOOGLE_APPLICATION_CREDENTIALS=path/to/service-account.json
    ```
 
 4. **Run the Test Suite**:
-   Ensure all core business logic passes before starting:
+   Ensure all core business logic passes:
    ```bash
    npm run test
    ```
@@ -79,11 +86,11 @@ VoteMarg/
 
 ## ☁️ Deployment (CI/CD)
 
-The project is fully integrated with Google Cloud Build. Every deployment automatically runs:
-1. `npm install`
-2. `npm run test` (The build securely fails if tests do not pass)
-3. Container build (`Dockerfile`)
-4. Deployment to Google Cloud Run
+The project is fully integrated with Google Cloud Build and optimized for **Google Cloud Run**. Every deployment automatically runs:
+1. `npm ci` for clean dependency installation.
+2. `npm run test` (**Build Gate**: Build fails if tests don't pass).
+3. Docker container build with **Standalone Optimization**.
+4. Secure Secret Injection from **Google Secret Manager**.
 
 To manually trigger a deployment:
 ```bash
@@ -93,9 +100,9 @@ gcloud builds submit --config cloudbuild.yaml
 ## 🎨 Design & Engineering Principles
 
 - **Security First**: Client data is never trusted. All inputs are validated via Zod on the server.
-- **Clarity over Complexity**: Every interaction must be self-explanatory.
-- **Fast Interaction**: Transitions are optimized (0.2s-0.3s) to feel snappy on low-end mobile devices.
-- **Trust-First**: Sources and last-updated timestamps are displayed prominently to ensure users act on reliable info.
+- **Clarity over Complexity**: Every interaction must be self-explanatory. Snappy transitions (0.2s) for mobile.
+- **Data Privacy**: Anonymous auth and non-PII logging to Firestore.
+- **Institutional Minimalism**: A design that feels official, trustworthy, and fast.
 
 ---
 Developed with ❤️ for the Indian Electorate.

@@ -1,107 +1,48 @@
 "use client";
 
 import { AnimatePresence, motion } from "framer-motion";
-import { useEffect, useMemo, useState } from "react";
-import { useRouter } from "next/navigation";
+import { useEffect } from "react";
 import AnswerSummary from "@/components/AnswerSummary";
 import DropdownQuestion from "@/components/DropdownQuestion";
 import ProgressBar from "@/components/ProgressBar";
 import QuestionCard from "@/components/QuestionCard";
 import { Language, RegistrationAnswer, StateElectionData, YesNo } from "@/lib/types";
 import { t } from "@/lib/translations";
+import { useQuestionFlow, AnswersState } from "@/hooks/useQuestionFlow";
+import { useRef } from "react";
 
 interface QuestionFlowProps {
   language: Language;
   stateData?: StateElectionData;
 }
 
-interface AnswersState {
-  age: number | null;
-  citizenship: YesNo | null;
-  registered: RegistrationAnswer | null;
-  moved: YesNo | null;
-}
-
 export default function QuestionFlow({ language, stateData }: QuestionFlowProps) {
-  const router = useRouter();
-  const totalSteps = 4;
-  const [currentStep, setCurrentStep] = useState(0);
+  const headingRef = useRef<HTMLHeadingElement>(null);
+  const {
+    currentStep,
+    totalSteps,
+    answers,
+    setAnswers,
+    error,
+    setError,
+    isSubmitting,
+    setIsSubmitting,
+    ageOptions,
+    goToPreviousQuestion,
+    goToNextQuestion,
+    jumpToQuestion,
+    submitAnswers
+  } = useQuestionFlow(language);
 
   useEffect(() => {
-    router.prefetch("/result");
-  }, [router]);
-  const [isSubmitting, setIsSubmitting] = useState(false);
-  const [error, setError] = useState<string>("");
-  const [answers, setAnswers] = useState<AnswersState>({
-    age: null,
-    citizenship: null,
-    registered: null,
-    moved: null
-  });
-
-  const ageOptions = useMemo(() => {
-    return Array.from({ length: 85 }, (_, index) => index + 16);
-  }, []);
-
-  const goToPreviousQuestion = () => {
-    setError("");
-    setIsSubmitting(false);
-    setCurrentStep((prev) => Math.max(prev - 1, 0));
-  };
-
-  const goToNextQuestion = () => {
-    setError("");
-    setIsSubmitting(false);
-    setCurrentStep((prev) => Math.min(prev + 1, totalSteps - 1));
-  };
-
-  const jumpToQuestion = (field: "age" | "citizen" | "registered" | "moved") => {
-    const stepMap = {
-      age: 0,
-      citizen: 1,
-      registered: 2,
-      moved: 3
-    } as const;
-
-    setError("");
-    setIsSubmitting(false);
-    setCurrentStep(stepMap[field]);
-  };
-
-  const submitAnswers = (nextAnswers: AnswersState) => {
-    if (nextAnswers.age === null || Number.isNaN(nextAnswers.age)) {
-      setError(t("invalid_age", language));
-      setIsSubmitting(false);
-      return;
-    }
-
-    if (
-      nextAnswers.citizenship === null ||
-      nextAnswers.registered === null ||
-      nextAnswers.moved === null
-    ) {
-      setError(t("field_required", language));
-      setIsSubmitting(false);
-      return;
-    }
-
-    const query = new URLSearchParams({
-      age: String(nextAnswers.age),
-      citizenship: nextAnswers.citizenship,
-      registered: nextAnswers.registered,
-      moved: nextAnswers.moved
-    });
-
-    setError("");
-    router.push(`/result?${query.toString()}`);
-  };
+    headingRef.current?.focus();
+  }, [currentStep]);
 
   const handleAgeContinue = () => {
     if (answers.age === null) {
       setError(t("invalid_age", language));
       return;
     }
-
     goToNextQuestion();
   };
 
@@ -120,11 +61,9 @@ export default function QuestionFlow({ language, stateData }: QuestionFlowProps)
       ...answers,
       moved: value
     };
-
     setAnswers(nextAnswers);
     setError("");
     setIsSubmitting(true);
-
     setTimeout(() => {
       submitAnswers(nextAnswers);
     }, 100);
@@ -134,6 +73,7 @@ export default function QuestionFlow({ language, stateData }: QuestionFlowProps)
     if (currentStep === 0) {
       return (
         <DropdownQuestion
+          headingRef={headingRef}
           question={t("age_label", language)}
           selectedValue={answers.age}
           options={ageOptions}
@@ -151,6 +91,7 @@ export default function QuestionFlow({ language, stateData }: QuestionFlowProps)
     if (currentStep === 1) {
       return (
         <QuestionCard
+          headingRef={headingRef}
           question={t("citizenship_label", language)}
           options={[
             { value: "yes", label: t("yes", language) },
@@ -165,6 +106,7 @@ export default function QuestionFlow({ language, stateData }: QuestionFlowProps)
     if (currentStep === 2) {
       return (
         <QuestionCard
+          headingRef={headingRef}
           question={t("registered_label", language)}
           options={[
             { value: "yes", label: t("yes", language) },
@@ -179,6 +121,7 @@ export default function QuestionFlow({ language, stateData }: QuestionFlowProps)
 
     return (
       <QuestionCard
+        headingRef={headingRef}
         question={t("moved_label", language)}
         options={[
           { value: "yes", label: t("yes", language) },

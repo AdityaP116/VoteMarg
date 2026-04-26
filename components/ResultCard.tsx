@@ -1,6 +1,12 @@
 import StepList from "@/components/StepList";
 import { DecisionResult, Language } from "@/lib/types";
 import { t, TranslationKey } from "@/lib/translations";
+import dynamic from 'next/dynamic';
+
+const PollingStationMap = dynamic(() => import("@/components/PollingStationMap"), {
+  loading: () => <div className="h-[300px] w-full animate-pulse rounded-xl bg-[var(--surface-container-low)]" />,
+  ssr: false
+});
 
 interface ResultCardProps {
   result: DecisionResult;
@@ -83,6 +89,15 @@ export default function ResultCard({ result, language }: ResultCardProps) {
           ))}
         </ul>
       </section>
+      
+      {result.status === 'registered' && (
+        <section className="space-y-3">
+          <h3 className="text-base font-semibold text-[var(--on-surface)]">
+            {t("polling_station_label" as TranslationKey, language) || "Your Polling Station"}
+          </h3>
+          <PollingStationMap />
+        </section>
+      )}
 
       <section className="space-y-4">
         <div className="flex flex-col gap-3">
